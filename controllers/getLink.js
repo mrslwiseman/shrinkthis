@@ -4,6 +4,7 @@ const express = require('express')
     , Link = require('../models/Link');
 
 router.get('/', (req, res) => {
+    console.log('get link route hit')
     (async function () {
         // const dbName = 'shrinkthis';
         // const url = `mongodb://localhost:27017/${dbName}`;

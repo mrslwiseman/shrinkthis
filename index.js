@@ -20,10 +20,6 @@ mongoose.connection.on('error', (err) => {
     console.log(err)
 });
 
-    
-seed();
-
-
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // routes
