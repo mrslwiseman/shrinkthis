@@ -23,7 +23,7 @@ mongoose.connection.on('error', (err) => {
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // routes
-app.get('/favicon.ico', (req,res) => res.status(204))
+app.get('/favicon.ico', (req,res) => res.status(204).end())
 app.use('/new', setLink) // @query url=http://www.someUrl.com
 app.use('/:id', getLink) // @number
 app.use('/', index) // @number
