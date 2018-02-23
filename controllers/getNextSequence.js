@@ -1,5 +1,4 @@
 const getNextSequence = async function (Counter) {
-    console.log('seeding')
     let seq;
     try {
         seq = await Counter.findOneAndUpdate(
