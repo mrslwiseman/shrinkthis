@@ -1,12 +1,12 @@
-const express = require('express')
-, app = express()
-, bodyParser = require('body-parser')
-, mongoose = require('mongoose')
-, port = process.env.PORT || 8080
-, getLink = require('./controllers/getLink')
-, setLink = require('./controllers/setLink')
-, index = require('./controllers/index')
-,  seed = require('./seed')
+const express = require('express');
+const app = express()
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const port = process.env.PORT || 8080
+const getLink = require('./controllers/getLink')
+const setLink = require('./controllers/setLink')
+const index = require('./controllers/index')
+const seed = require('./seed')
 
 // import environmental variables from our variables.env file
 require('dotenv').config({ path: 'variables.env' });
