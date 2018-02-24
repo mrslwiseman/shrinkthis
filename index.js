@@ -9,20 +9,22 @@ const index = require('./controllers/index')
 const seed = require('./seed')
 
 if (process.env.NODE_ENV !== 'production') {
-    console.log('loading variables.env')
-      require('dotenv').config({path: 'variables.env'});
+    console.log('Using local variables.env...')
+    require('dotenv').config({ path: 'variables.env' });
 }
 
-mongoose.connect(process.env.DATABASE);
+mongoose.connect(process.env.MONGO_URI)
+    .then(
+        () => { console.log('Connected to DB.') },
+        err => console.log('Error connecting to DB:\n' + err)
+    );
+
 mongoose.Promise = global.Promise;
-mongoose.connection.on('error', (err) => {
-    console.log(err)
-});
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // routes
-app.get('/favicon.ico', (req,res) => res.status(204).end())
+app.get('/favicon.ico', (req, res) => res.status(204).end())
 app.use('/new', setLink) // @query url=http://www.someUrl.com
 app.use('/:id', getLink) // @number
 app.use('/', index) // TODO: Point to a front end form

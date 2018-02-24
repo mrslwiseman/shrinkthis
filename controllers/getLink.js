@@ -9,11 +9,8 @@ router.get('/', (req, res) => {
             // TODO: ok for small scale
             const shortLinkId = Number(req.params.id);
             const search = await Link.findOne({ id: shortLinkId });
-
             if (search === null) throw Error('Link Id was invalid or not found.');
-
             // TODO: incremement the link hit counter array with a timestamp
-
             // Over 'n' out. 
             res.redirect(search.url);
         } catch (e) {
@@ -27,6 +24,3 @@ router.get('/', (req, res) => {
 })
 
 module.exports = router;
-
-
-
