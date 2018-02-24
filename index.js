@@ -8,14 +8,13 @@ const setLink = require('./controllers/setLink')
 const index = require('./controllers/index')
 const seed = require('./seed')
 
-// import environmental variables from our variables.env file
-require('dotenv').config({ path: 'variables.env' });
+if (process.env.NODE_ENV !== 'production') {
+    console.log('loading variables.env')
+      require('dotenv').config({path: 'variables.env'});
+}
 
 mongoose.connect(process.env.DATABASE);
 mongoose.Promise = global.Promise;
-mongoose.connection.on('connected', () => {
-    console.log('Connected to DB')
-});
 mongoose.connection.on('error', (err) => {
     console.log(err)
 });
