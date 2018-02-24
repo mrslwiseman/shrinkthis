@@ -1,6 +1,5 @@
-const   express = require('express')
-,       MongoClient = require('mongodb').MongoClient
-,       router = express.Router({mergeParams: true})
+const express = require('express');
+const router = express.Router({mergeParams: true});
 
 router.get('/', (req, res) => {
     res.json({
