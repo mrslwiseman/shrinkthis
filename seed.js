@@ -1,8 +1,8 @@
 "use strict";
-const   mongoose = require('mongoose')
-,       getNextSequence = require('./controllers/getNextSequence')
-,       Counter = require('./models/Counter')
-,       Link = require('./models/Link')
+const mongoose = require('mongoose');
+const {setNextSequence, getNextSequence} = require('./models/Counter');
+const Link = require('./models/Link');
+
 const seeds = [
     {
         url: "http://www.cats.com"
@@ -16,20 +16,18 @@ const seeds = [
     {
         url: "http://www.whatever.com"
     }
-]
+];
 
 const seed = async function () {
-    // const dbName = 'shrinkthis';
-    // const url = `mongodb://localhost:27017/${dbName}`;
     try {
         await Link.remove();
+        await setNextSequence();
         for ( let seed of seeds ){
-        // easier if we count number of seeds first and increment rather than making multiple calls to db
-            const nextLinkId = await getNextSequence(Counter); 
-            await Link.create({ url: seed.url, id: nextLinkId })
+            const nextLinkId = await getNextSequence(); 
+            await Link.create(seed.url, nextLinkId)
         }
     } catch (e) {
-        console.log(e);
+        console.log('🚫  Error whilst seeding: ' + e);
     }
 }
 
