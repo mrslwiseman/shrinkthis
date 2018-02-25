@@ -14,6 +14,7 @@ exports.getLink = async (req, res) => {
 }
 
 exports.setLink = async (req, res) => {
+    console.log('setLink route')
     if (!req.query.url) throw Error('Your query is missing a URL parameter. ')
     // rudimentary url checking / cleaning    
     // not sure if this should be in model or controller
