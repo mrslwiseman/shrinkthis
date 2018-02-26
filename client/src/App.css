@@ -1,5 +1,9 @@
 .App {
   text-align: center;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 * {
   box-sizing: border-box;
@@ -25,6 +29,16 @@ margin: 0 auto;
   outline: none;
   border: 1px solid rgb(210, 161, 0);
 }
+button {
+  border: none;
+  background: none;
+  outline: none;
+  
+}
+
+button:focus {
+  outline: none;
+}
 
 .button {
   height: 50px;
@@ -45,4 +59,52 @@ margin: 0 auto;
 
 .input--touched.input--invalid {
   border: 1px solid red !important;
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(20px);
+  } 75% {
+    transform: translateX(-20px);
+    border: 1px solid red;
+  }
+}
+
+.input--nope {
+  animation: shake 250ms ease-in-out alternate;
+}
+
+.output {
+  flex-grow: 1;
+}
+
+.output__url {
+  transition: all 250ms ease;
+}
+
+.output--copied .output__url {
+  color: rgb(227, 87, 0);
+}
+
+@keyframes swoopIn {
+  from {
+    transform: translateY(-1000px)
+  } to {
+    transform: translateY(0)
+  }
+}
+
+.output__url {
+  position: relative;
+  font-size: 2em;
+  animation: swoopIn 1000ms ease;
+}
+
+.output__copy-btn {
+  position: absolute;
+  margin: auto 0;
+}
+
+.api-details {
+  text-align: left;
 }

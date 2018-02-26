@@ -20,7 +20,7 @@ describe('GET /new returns a short link', () => {
     })
     it('should return a short link', (done) => {
         chai.request(server)
-            .get('/new')
+            .get('/api/new')
             .query({ url: 'http://www.long.com' })
             .end((err, res) => {
                 res.should.have.status(200);
@@ -30,15 +30,15 @@ describe('GET /new returns a short link', () => {
     })
     it('rejects an invalid url', (done) => {
         chai.request(server)
-            .get('/new')
+            .get('/api/new')
             .query({ url: 'http://wwwasdfcom' })
             .end((err, res) => {
-                res.should.have.status(200);
+                res.should.have.status(400);
                 res.body.should.have.a.property('success');
                 assert.isFalse(res.body.success)
-                expect(res.body.msg).equal('Please enter a valid url.');
                 done();
             })
     })
+    
 })
 

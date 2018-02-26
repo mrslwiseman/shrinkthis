@@ -8,28 +8,38 @@ const { urlIsValid, urlHasWhiteSpace, removeWhiteSpace, urlHasProtocol } = requi
 
 exports.getLink = async (req, res) => {
     const link = await Link.find(req.params.id)
-    if (!link) throw Error('Link Id was invalid or not found.');
+    if(!link){
+        let error = new Error('Link Id was invalid or not found.')
+        error.code = 404;
+        throw error;
+    }
     // TODO: incremement the link hit counter array with a timestamp
     res.redirect(link);
 }
 
 exports.setLink = async (req, res) => {
-    if (!req.query.url) throw Error('Your query is missing a URL parameter. ')
+    if(!req.query.url){
+        let error = new Error('Your query is missing a URL parameter.')
+        error.code = 400;
+        throw error;
+    }
     const { url } = req.query
     let link = url;
-
+    
+    if (!urlHasProtocol(req.query.url)) {
+        link = 'http://' + link; // add it
+    }
     if (!urlIsValid(link)) {
         // if is missing the protocol http://
-        if (!urlHasProtocol(req.query.url)) {
-            link = 'http://' + link; // add it
-        }
         // if has whitespace
         if (urlHasWhiteSpace(link)) {
             link = removeWhiteSpace(link); // remove it
         }
 
         if (!urlIsValid(link)) {
-            throw Error('Please enter a valid url.')
+            let error = new Error('Please enter a valid URL.')
+            error.code = 400;
+            throw error;
         }
     }
     const nextLinkId = await getNextSequence();

@@ -11,8 +11,7 @@ const Link = mongoose.model('link', linkSchema)
 
 exports.find = async (id) => {
     const search = await Link.findOne({ id });    
-    if(!search) {throw Error('URL not found')}
-    return search.url;
+    return search ? search.url : null;
 }
 
 exports.create = async(url,id) => {

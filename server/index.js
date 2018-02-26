@@ -6,13 +6,14 @@ const seed = require('./seed');
 const routes = require('./routes/index');
 const errorHandler = require('./handlers/errors');
 
-if (process.env.NODE_ENV !== 'production') {
+if (app.get('env') !== 'production') {
     console.log('✅  ' + app.get('env') + ' environment.')
     require('dotenv').config();
+    console.log('📍' + process.env.NODE_ENV)
+    console.log('📍' + process.env.MONGO_URI)
 }
 
-mongoose
-    .connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
     .then(
         () => { 
             console.log('✅  Connected to DB.') 
@@ -21,10 +22,8 @@ mongoose
         err => console.log('🚫  Error connecting to DB:\n' + err)
     );
 
-
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// routes
 app.use('/', routes);
 
 if (app.get('env') === 'development') {

@@ -26,7 +26,7 @@ describe('urlIsValid()', () => {
         assert.equal(expect, result)
     })
     it('returns false for an invalid Url', () => {
-        const validUrl = 'youtubedotcom';
+        const validUrl = 'www.youtube.com';
         const expect = false;
         const result = urlIsValid(validUrl);
         assert.equal(expect, result)

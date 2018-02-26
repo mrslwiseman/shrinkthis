@@ -21,7 +21,11 @@
     "pug": "^2.0.0-rc.4"
   },
   "devDependencies": {
-    "concurrently": "^3.5.1"
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "concurrently": "^3.5.1",
+    "sinon": "^4.4.2",
+    "sinon-chai": "^2.14.0"
   },
   "cacheDirectories": [
     "node_modules",

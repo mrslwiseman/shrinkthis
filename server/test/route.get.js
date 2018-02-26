@@ -19,7 +19,8 @@ chai.use(chaiHttp);
 describe('GET /1 redirects', () => {
     const testUrl = 'https://www.youtube.com'
 
-    before((next) => {
+    after((next) => {
+        // after test clear db
         Link.remove({});
         Link.create(testUrl, 1)
         next();
