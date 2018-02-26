@@ -17,7 +17,6 @@ mongoose
         () => { 
             console.log('✅  Connected to DB.') 
             mongoose.Promise = global.Promise;
-            seed();
         },
         err => console.log('🚫  Error connecting to DB:\n' + err)
     );
@@ -39,3 +38,5 @@ app.set('port', process.env.PORT || 8080)
 const server = app.listen(app.get('port'), () => {
     console.log(`Server running → PORT ${server.address().port}`);
 });
+
+module.exports = server;

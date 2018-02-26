@@ -11,15 +11,13 @@ exports.catchErrors = (fn) => {
 
 // dev final error handling
 exports.development = (err, req, res, next) => {
-    console.log('⚠️   DEVELOPMENT error handler');
     console.log(err.stack)
     res.send(err.stack)
 }
-// production final error handling
 
+// production final error handling
+// hide stack message from user.
 exports.production = (err, req, res, next) => {
-    console.log('⚠️   PRODUCTION error handler');
-    // redirect to 404 page
     res.json({
         success: false,
         msg: err.message

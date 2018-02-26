@@ -6,7 +6,8 @@ const linkSchema = new Schema({
     id: String
 })
 
-const Link = mongoose.model('link', linkSchema);
+// had to do this for testing.
+const Link = mongoose.model('link', linkSchema)
 
 exports.find = async (id) => {
     const search = await Link.findOne({ id });    
@@ -21,3 +22,6 @@ exports.create = async(url,id) => {
 exports.remove = async (query = {}) => {
     await Link.remove(query)
 }
+
+// https://stackoverflow.com/questions/19051041/cannot-overwrite-model-once-compiled-mongoose
+exports.Link = Link;

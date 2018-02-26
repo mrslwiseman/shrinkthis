@@ -4,11 +4,15 @@
 //     const cleanLink = 'http://' + link.replace(/ /gi, ''); // remove any white space
 //     return cleanLink;
 // }
-
-const assert = require('assert')
-const { urlIsValid, urlHasProtocol, addUrlProtocol, urlHasWhiteSpace, removeWhiteSpace } = require('./index');
+const sinon = require('sinon');
+const chai = require('chai')
+const sinonChai = require('sinon-chai');
+const assert = require('assert');
+const { urlIsValid, urlHasProtocol, addUrlProtocol, urlHasWhiteSpace, removeWhiteSpace } = require('../helpers/index');
+chai.use(sinonChai);
 
 describe('urlIsValid()', () => {
+   
     it('returns true for a validUrl', () => {
         const validUrl = 'http://www.youtube.com';
         const expect = true;

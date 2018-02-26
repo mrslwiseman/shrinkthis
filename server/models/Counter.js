@@ -6,7 +6,7 @@ const counterSchema = new Schema({
     sequence_value: Number
 })
 
-const Counter = mongoose.model('counter', counterSchema);
+const Counter = mongoose.model('counter', counterSchema) ;
 
 exports.setNextSequence = async () => {
     try {
