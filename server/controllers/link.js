@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Link = require('../models/Link');
 const {getNextSequence} = require('../models/Counter');
 const Counter = require('../models/Counter');
-const {isValidUrl, formatURL} = require('../helpers/index')
+const {urlIsValid, urlHasWhiteSpace, removeWhiteSpace, urlHasProtocol} = require('../helpers/index')
 
 exports.getLink = async (req, res) => {
     const link = await Link.find(req.params.id)
@@ -16,9 +16,26 @@ exports.getLink = async (req, res) => {
 exports.setLink = async (req, res) => {
     console.log('setLink route')
     if (!req.query.url) throw Error('Your query is missing a URL parameter. ')
-    // rudimentary url checking / cleaning    
-    // not sure if this should be in model or controller
-    const link = !isValidUrl(req.query.url) && formatURL(req.query.url) || req.query.url
+    const {url} = req.query
+    let link = url;
+
+    if(!urlIsValid(link)){
+        // if is missing the protocol http://
+        if(!urlHasProtocol(req.query.url)){
+            link = 'http://' + link; // add it
+        }
+        // if has whitespace
+        if(urlHasWhiteSpace(link)){
+            link = removeWhiteSpace(link); // remove it
+        }
+
+        if(!urlIsValid(link)){
+            throw Error('Please enter a valid url.')
+        }
+    }
+
+    // check its valid
+        // if its not reject
     const nextLinkId = await getNextSequence();
     await Link.create(link, nextLinkId);
     res.json({
