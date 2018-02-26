@@ -7,6 +7,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import copy from 'copy-to-clipboard';
 import CopyIcon from './Components/icon-copy'
+import Api from './Components/Api';
 
 class App extends Component {
   constructor(props) {
@@ -16,7 +17,8 @@ class App extends Component {
       output: '',
       valid_input: false,
       validation_msg: '',
-      clipboard: ''
+      clipboard: '',
+      api_visible: false
     }
   }
 
@@ -33,6 +35,7 @@ class App extends Component {
 
   getLink = (link) => {
     // TODO: refactor this a bit.
+    if(this.state.output != '') return
     axios.get(`/api/new?url=${link}`)
       .then(res => {
         console.log(res)
@@ -50,11 +53,13 @@ class App extends Component {
     const input = this.input.value;
     let valid = false;
     let validation_msg;
-    if (input.length >= 4) {
+    if (input.length >= 3) {
       this.input.classList.add('touched')
       let formatted = input;
       // append http if missing
-      if (!this.urlHasProtocol(input)) { formatted = 'http://' + formatted; }
+      if (!this.urlHasProtocol(input)) { 
+        formatted = 'http://' + formatted; 
+      }
       if (this.urlIsValid(formatted)) {
         console.log('✅  url valid')
         valid = true;
@@ -71,7 +76,7 @@ class App extends Component {
   }
 
   handleUserInput = (e) => {
-    this.setState({ input: this.input.value }, _.debounce(this.checkInputValid, 200))
+    this.setState({ input: this.input.value, output: '' }, _.debounce(this.checkInputValid, 200))
   }
 
   onFormSubmit = (e) => {
@@ -81,7 +86,7 @@ class App extends Component {
     } else {
       // if user tries to submit with invalid input
       // input has class added to it for a second for animation 
-      this.input.classList.add('input--nope') ``
+      this.input.classList.add('input--nope')
       //then removed
       setTimeout(() => this.input.classList.remove('input--nope'), 1000)
     }
@@ -91,6 +96,12 @@ class App extends Component {
     copy(this.state.output)
     this.setState({
       clipboard: this.state.output
+    })
+  }
+
+  onToggleApi = () => {
+    this.setState({
+      api_visible: !this.state.api_visible
     })
   }
 
@@ -122,13 +133,11 @@ class App extends Component {
 
           }
         </div>
-
-
         <form
           className='form'
           action="/new"
           onSubmit={this.onFormSubmit}>
-          <label htmlFor="url">{this.state.validation_msg}</label>
+          <label className='label label--message' htmlFor="url">{this.state.validation_msg}</label>
           <input
             placeholder='Enter your URL to shorten'
             name='url'
@@ -141,47 +150,20 @@ class App extends Component {
           <button
             className='button button--submit'
             type='submit'
-          /*disabled={!this.state.valid_input}*/
           >
             Shrink my Link!
           </button>
-          <div className='api-details'>
-          <h2>API Endpoints</h2>
-          <h3>URL</h3>
-          <p><code>/new</code></p>
-          <hr />
-          <h3>Method</h3>
-          <p><code>GET</code></p>
-          <hr />
-          <h3>URL Params</h3>
-          <h4>Required:</h4>
-          <p><code>url=[string]</code></p>
-          <hr />
-          <h4>Rules:</h4>
-          <ul>
-          <li>Must be a valid URL.</li>
-          <li>API does a basic cleanup of URL string including adding <code>http://</code> protocol if missing.</li>
-          </ul>
-          <hr />
-          <h4>Error Responses</h4>
-          <p><strong>Code:</strong> 400</p>
-          <p><strong>Content:</strong><code>{`success: false, msg: 'Your query was empty.'`}</code></p>
-          <hr />
-          <p><strong>Code:</strong> 404 NOT FOUND</p>
-          <p><strong>Content:</strong><code>{`success: false, msg: 'Link Id was invalid or not found.'`}</code></p>
-          <hr />
-          <p><strong>Code:</strong> 400 BAD REQUEST</p>
-          <p><strong>Content:</strong><code>{`success: false, msg: 'Your query is missing a URL parameter.'`}</code></p>
-          <hr />
-          <p><strong>Code:</strong> 400 BAD REQUEST</p>
-          <p><strong>Content:</strong><code>{`success: false, msg: 'Please enter a valid url.'`}</code></p>
-          
-
-            </div>
-          
-
         </form>
 
+        <button className='button' onClick={this.onToggleApi}>
+          View API Documentation
+        </button>
+
+        {
+          this.state.api_visible &&
+          <Api />
+
+        }
       </div>
     );
   }

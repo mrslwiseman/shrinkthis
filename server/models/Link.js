@@ -10,8 +10,8 @@ const linkSchema = new Schema({
 const Link = mongoose.model('link', linkSchema)
 
 exports.find = async (id) => {
-    const search = await Link.findOne({ id });    
-    return search ? search.url : null;
+    const search = await Link.findOne({ id });
+    return search.url;
 }
 
 exports.create = async(url,id) => {

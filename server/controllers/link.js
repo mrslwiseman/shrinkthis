@@ -7,14 +7,20 @@ const Counter = require('../models/Counter');
 const { urlIsValid, urlHasWhiteSpace, removeWhiteSpace, urlHasProtocol } = require('../helpers/index')
 
 exports.getLink = async (req, res) => {
+    console.log('getting link...');
+    
     const link = await Link.find(req.params.id)
     if(!link){
+        console.log('💥💥💥💥💥 error');
+        
         let error = new Error('Link Id was invalid or not found.')
         error.code = 404;
         throw error;
     }
+    console.log('redirecting to: '+ link)
     // TODO: incremement the link hit counter array with a timestamp
-    res.redirect(link);
+    // res.send(link);
+    res.redirect(link)
 }
 
 exports.setLink = async (req, res) => {
@@ -46,6 +52,6 @@ exports.setLink = async (req, res) => {
     await Link.create(link, nextLinkId);
     res.json({
         success: true,
-        short: `http://${req.headers.host}/${nextLinkId}`,
+        short: `http://${req.headers.host}/api/${nextLinkId}`,
     })
 }
