@@ -1,17 +1,20 @@
 .App {
   text-align: center;
-  height: 300px;
-  display: flex;
+  width: 50%;
+  margin: 0 auto;
+  margin-top: 20%;
+  /* height: 300px; */
+  /* display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center; */
 }
 * {
   box-sizing: border-box;
 }
 
 .form {
-width: 50%;
 margin: 0 auto;
+position: relative;
 }
 
 .input {
@@ -23,6 +26,11 @@ margin: 0 auto;
   border: 1px solid rgb(235, 235, 235);
   text-align: center;
   transition: all .15s ease;
+  margin: 20px 0;
+}
+
+.label {
+  color: #444;
 }
 
 .input:focus {
@@ -33,7 +41,7 @@ button {
   border: none;
   background: none;
   outline: none;
-  
+  font-size: .8em;
 }
 
 button:focus {
@@ -42,6 +50,7 @@ button:focus {
 
 .button {
   height: 50px;
+
   border: 1px solid rgb(235, 235, 235);
   width: 150px;
   border-radius: 20px;
@@ -50,7 +59,13 @@ button:focus {
 }
 
 .button--submit {
-
+  border: 2px solid rgb(65, 0, 218);
+  color: rgb(65, 0, 218);
+}
+.label--message {
+  position: absolute;
+  width: 100%;
+  top: -30px;
 }
 
 .input--valid {
@@ -64,18 +79,21 @@ button:focus {
 @keyframes shake {
   25% {
     transform: translateX(20px);
+    border: 1px solid red;
   } 75% {
     transform: translateX(-20px);
     border: 1px solid red;
-  }
+  } 
 }
 
 .input--nope {
-  animation: shake 250ms ease-in-out alternate;
+  animation: shake 500ms ease-in-out alternate ;
 }
 
 .output {
   flex-grow: 1;
+  height: 200px;
+  width: 100%;
 }
 
 .output__url {
@@ -83,7 +101,7 @@ button:focus {
 }
 
 .output--copied .output__url {
-  color: rgb(227, 87, 0);
+  color: rgb(0, 255, 0);
 }
 
 @keyframes swoopIn {
@@ -102,7 +120,7 @@ button:focus {
 
 .output__copy-btn {
   position: absolute;
-  margin: auto 0;
+  margin: 5px 0 0 20px;
 }
 
 .api-details {
