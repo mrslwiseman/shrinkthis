@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const seed = require('./seed');
 const routes = require('./routes/index');
 const errorHandler = require('./handlers/errors');
 
