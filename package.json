@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "6.11.x"
+    "node": "8.1.x",
+    "npm": "5.3.x"
   },
   "scripts": {
-    "start": "node server",
+    "start": "node server/index.js",
     "heroku-postbuild": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "watch": "concurrently \"npm run start\" \"cd client; npm run start\""
   },
