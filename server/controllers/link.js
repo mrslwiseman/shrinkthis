@@ -8,8 +8,8 @@ const { urlIsValid, urlHasWhiteSpace, removeWhiteSpace, urlHasProtocol } = requi
 
 exports.getLink = async (req, res) => {
     const link = await Link.find(req.params.id);
-    if(!link){
-        let error = new Error('Link Id was invalid or not found.')
+    if (!link) {
+        let error = new Error('Link Id was invalid or not found.');
         error.code = 404;
         throw error;
     }
@@ -18,14 +18,14 @@ exports.getLink = async (req, res) => {
 }
 
 exports.setLink = async (req, res) => {
-    if(!req.query.url){
+    if (!req.query.url) {
         let error = new Error('Your query is missing a URL parameter.')
         error.code = 400;
         throw error;
     }
     const { url } = req.query;
     let link = url;
-    
+
     if (!urlHasProtocol(req.query.url)) {
         link = 'http://' + link; // add it
     }

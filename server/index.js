@@ -1,3 +1,4 @@
+"use strict";
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -13,7 +14,7 @@ if (app.get('env') !== 'production') {
 mongoose.connect(process.env.MONGO_URI)
     .then(
         () => { 
-            console.log('✅  Connected to DB.') ;
+            console.log('✅  Connected to DB.');
             mongoose.Promise = global.Promise;
         },
         err => console.log('🚫  Error connecting to DB:\n' + err)

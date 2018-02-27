@@ -8,9 +8,9 @@ const path = require('path');
 
 // routes
 
-router.use('/api/new', catchErrors(link.setLink)) 
-router.use('/api/:id', catchErrors(link.getLink)) 
-router.use('/api/', catchErrors(index)) 
+router.use('/api/new', catchErrors(link.setLink)); 
+router.use('/api/:id', catchErrors(link.getLink));
+router.use('/api/', catchErrors(index)); 
 
 router.use('/', express.static(path.resolve(__dirname, '../../client/build')));
 // All remaining requests return the front end
