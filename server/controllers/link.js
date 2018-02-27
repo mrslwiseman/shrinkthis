@@ -4,17 +4,17 @@ const mongoose = require('mongoose');
 const Link = require('../models/Link');
 const { getNextSequence } = require('../models/Counter');
 const Counter = require('../models/Counter');
-const { urlIsValid, urlHasWhiteSpace, removeWhiteSpace, urlHasProtocol } = require('../helpers/index')
+const { urlIsValid, urlHasWhiteSpace, removeWhiteSpace, urlHasProtocol } = require('../helpers/index');
 
 exports.getLink = async (req, res) => {
-    const link = await Link.find(req.params.id)
+    const link = await Link.find(req.params.id);
     if(!link){
         let error = new Error('Link Id was invalid or not found.')
         error.code = 404;
         throw error;
     }
     // TODO: incremement the link hit counter array with a timestamp
-    res.redirect(link)
+    res.redirect(link);
 }
 
 exports.setLink = async (req, res) => {
@@ -23,7 +23,7 @@ exports.setLink = async (req, res) => {
         error.code = 400;
         throw error;
     }
-    const { url } = req.query
+    const { url } = req.query;
     let link = url;
     
     if (!urlHasProtocol(req.query.url)) {

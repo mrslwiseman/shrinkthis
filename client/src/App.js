@@ -38,12 +38,11 @@ class App extends Component {
     if(this.state.output != '') return
     axios.get(`/api/new?url=${link}`)
       .then(res => {
-        console.log(res)
         if (res.data.short) {
           this.setState({ output: res.data.short })
         }
       }).catch(e => {
-        console.log(e)
+        console.log(e);
       })
   }
 

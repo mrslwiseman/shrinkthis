@@ -14,9 +14,9 @@ exports.removeWhiteSpace = (link) => {
 
 exports.urlHasProtocol = (link) => {
     const re = /^(http:\/\/)|^(https:\/\/)/gi; // check starts with http(s)://
-    return re.test(link)
+    return re.test(link);
 }
 
 exports.addUrlProtocol = (link) => {
-    return 'http://' + link
+    return 'http://' + link;
 }
