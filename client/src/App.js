@@ -1,93 +1,124 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-
-import Search from './Components/Search';
 import axios from 'axios';
-import _ from 'lodash';
+import { debounce } from 'lodash';
 import copy from 'copy-to-clipboard';
-import CopyIcon from './Components/icon-copy'
-import Api from './Components/Api';
+import { urlHasProtocol, urlIsValid } from './helpers';
+import { Divider, Segment, Container, Form, Button, Input, Label, Icon, Message } from 'semantic-ui-react';
+import SearchInput from './Components/SearchInput';
+import LinkList from './Components/LinkList';
+import ApiDocs from './Components/ApiDocs';
+const config = {
+  error_msg: {
+    input: 'Please enter a valid URL',
+    server: 'There was a problem getting your URL. Please try again later.'
+  }
+}
 
 class App extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
+      link_list: [],
+      api_visible: false
+    };
+  }
+
+  componentWillMount() {
+    this.resetForm();
+  }
+
+  resetForm = () => {
+    this.setState({
       input: '',
       output: '',
       valid_input: false,
-      validation_msg: '',
       clipboard: '',
-      api_visible: false
-    }
-  }
-
-  urlHasProtocol = (link) => {
-    const re = /^(http:\/\/)|^(https:\/\/)/gi; // check starts with http(s)://
-    return re.test(link)
-  }
-
-  urlIsValid = (link) => {
-    const re = /^((?:https?|ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi
-    const result = re.test(link);
-    return result
+      error: false,
+      error_msg: config.error_msg.input
+    })
   }
 
   getLink = (link) => {
     // TODO: refactor this a bit.
-    if(this.state.output != '') return
-    axios.get(`/api/new?url=${link}`)
+    if (this.state.output != '') return
+    return axios.get(`/api/new?url=${link}`)
       .then(res => {
         if (res.data.short) {
-          this.setState({ output: res.data.short })
+          this.setState({
+            input: '',
+            output: res.data.short,
+            link_list: [
+              ...this.state.link_list,
+              { long: this.state.input, short: res.data.short }
+            ]
+          })
         }
       }).catch(e => {
-        console.log(e);
+        // throw error to outer handleErrors function
+        throw e;
       })
   }
 
   // checks users input is valid. 
   // note add protocol before validating
-  checkInputValid = () => {
-    const input = this.input.value;
+  checkInputValid = (input) => {
+    // const input = this.input.value;
     let valid = false;
-    let validation_msg;
     if (input.length >= 3) {
-      this.input.classList.add('touched')
+      // this.input.classList.add('touched')
       let formatted = input;
       // append http if missing
-      if (!this.urlHasProtocol(input)) { 
-        formatted = 'http://' + formatted; 
+      if (!urlHasProtocol(input)) {
+        formatted = 'http://' + formatted;
       }
-      if (this.urlIsValid(formatted)) {
+      if (urlIsValid(formatted)) {
         console.log('✅  url valid')
         valid = true;
-        validation_msg = '';
       } else {
         console.log('🚫  url invalid')
-        validation_msg = 'Please Enter a valid URL';
       }
       this.setState({
         valid_input: valid,
-        validation_msg
+        error: !valid
       })
     }
   }
 
   handleUserInput = (e) => {
-    this.setState({ input: this.input.value, output: '' }, _.debounce(this.checkInputValid, 200))
+    const input = e.target.value
+    this.setState(
+      { input, output: '' },
+      debounce(() => this.checkInputValid(input), 200))
+  }
+
+  handleErrors = (fn) => {
+    return fn()
+      .catch(e => {
+        this.setState({
+          error: true,
+          error_msg: config.error_msg.server
+        })
+      })
   }
 
   onFormSubmit = (e) => {
     e.preventDefault();
-    if (this.state.valid_input) {
-      this.getLink(this.state.input)
+    // if its valid
+    if (this.state.valid_input && !this.state.output) {
+      this.handleErrors(() => this.getLink(this.state.input))
+    }
+    // if theres an output, user is wanting to create new short link
+    else if (this.state.output) {
+      this.resetForm();
     } else {
-      // if user tries to submit with invalid input
-      // input has class added to it for a second for animation 
-      this.input.classList.add('input--nope')
-      //then removed
-      setTimeout(() => this.input.classList.remove('input--nope'), 1000)
+      // if its not valid and user is trying to submit
+      // flash error msg
+      this.setState({
+        error: true,
+        error_msg: 'Please Enter a valid URL.'
+      })
     }
   }
 
@@ -105,65 +136,67 @@ class App extends Component {
   }
 
   render() {
-
+    const inputValue = this.state.input;
+    const outputValue = this.state.output;
     return (
       <div className="App">
-
-        <div
-          className={`output ${this.state.clipboard === this.state.output ? 'output--copied' : ''}`}>
+        <Container
+          textAlign='center'>
+          <h1>Shrink This!</h1>
+          <p>A URL Shortener.</p>
           {
-            this.state.output &&
-            <div>
-              <p>Voila! Heres your link!</p>
-              <p className='output__url'>{this.state.output}
-
-                <button
-                  className='output__copy-btn'
-                  onClick={this.onCopyClick}>
-                  <CopyIcon />
-                </button>
-              </p>
-
-              {
-                this.state.clipboard === this.state.output &&
-                <small>Copied!</small>
-              }
-            </div>
-
+            this.state.link_list.length > 0 &&
+            <LinkList links={this.state.link_list} />
           }
-        </div>
-        <form
-          className='form'
-          action="/new"
-          onSubmit={this.onFormSubmit}>
-          <label className='label label--message' htmlFor="url">{this.state.validation_msg}</label>
-          <input
-            placeholder='Enter your URL to shorten'
-            name='url'
-            ref={input => this.input = input}
-            className={`${this.state.valid_input ? 'input--valid' : 'input--invalid'} input`}
-            type="text"
-            onChange={this.handleUserInput}
-            value={this.state.input}
-          />
-          <button
-            className='button button--submit'
-            type='submit'
-          >
-            Shrink my Link!
-          </button>
-        </form>
+          <Form onSubmit={this.onFormSubmit}>
+            {
+              this.state.error &&
+              <Message color='red'>
+                <p>{this.state.error_msg}</p>
+              </Message>
+            }
 
-        <button className='button' onClick={this.onToggleApi}>
-          View API Documentation
-        </button>
+            {
+              this.state.clipboard &&
+              <Message color='yellow'>
+                <p>Copied {this.state.clipboard}</p>
+              </Message>
+            }
+            <Segment>
+              <Form.Field>
+                <SearchInput
+                  handleUserInput={this.handleUserInput}
+                  onCopyClick={this.onCopyClick}
+                  inputValue={this.state.input}
+                  outputValue={this.state.output}
+                  isValid={this.state.valid_input}
+                />
+              </Form.Field>
+              <Button.Group vertical>
 
-        {
-          this.state.api_visible &&
-          <Api />
+                <Button
+                  primary
+                  content={this.state.output ? 'Shrink Another!' : 'Shrink'}
+                  icon='right arrow'
+                  labelPosition='right' />
 
-        }
+                <Button basic type='button' onClick={this.onToggleApi}>View API Docs</Button>
+              </Button.Group>
+            </Segment>
+          </Form>
+          <p>Another Matt Wiseman creation.</p>
+          <p>Node.js | Express | React | Semantic UI</p>
+          <a href="http://github.com/mrslwiseman/shrinkthis" target="_blank">Check out the Sauce.</a>
+          <p>😎</p>
+          {
+            this.state.api_visible &&
+            <Segment textAlign='left'>
+              <ApiDocs />
+            </Segment>
+          }
+        </Container>
       </div>
+
     );
   }
 }
